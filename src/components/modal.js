@@ -1,43 +1,25 @@
-function openModal(domElement){
+function openPopup(domElement){
   domElement.classList.add('popup_is-opened');
-
-  document.addEventListener('click', (function handler(evt){
-    if(evt.target.classList.contains('popup__close')){
-      closeModal(domElement);
-
-      document.removeEventListener('click', handler);
-    }
-  }));
-
-  closeModalByEscape(domElement);
-  closeModalByOverlay(domElement);
+  document.addEventListener('keydown', closePopupByEscape);
 }
 
-function closeModal(domElement){
+function closePopup(domElement){
+  document.removeEventListener('keydown', closePopupByEscape);
   domElement.classList.remove('popup_is-opened');
   domElement.classList.add('popup_is-animated');
-
-  setTimeout(() => document.forms['new-place'].reset(), 600);
 }
 
-function closeModalByEscape(domElement){
-  document.addEventListener('keydown', (function handler(evt){
-    if(evt.key === "Escape"){
-      closeModal(domElement);
-
-      document.removeEventListener('keydown', handler);
-    }
-  }));
+function closePopupByEscape(evt){
+  if(evt.key === "Escape"){
+    const openedPopup = document.querySelector('.popup_is-opened');
+    closePopup(openedPopup);
+  }
 }
 
-function closeModalByOverlay(domElement){
-  document.addEventListener('click', (function handler(evt){
-    if((evt.target.contains(domElement))&&(!evt.target.contains(domElement.querySelector('popup__content')))){
-      closeModal(domElement);
-
-      document.removeEventListener('click', handler);
-    }
-  }))
+function closePopupByClick(evt){
+  if(evt.target.classList.contains('popup__close') || evt.target.classList.contains('popup')){
+    closePopup(evt.currentTarget);
+  }
 }
 
-export {openModal, closeModal};
+export {openPopup, closePopup, closePopupByClick};
